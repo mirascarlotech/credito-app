@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'login_screen.dart';
-
 // Notifier to manage counter state
 class CounterNotifier extends Notifier<int> {
   @override
