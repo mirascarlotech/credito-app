@@ -4,11 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
 
-import '../config/app_config.dart';
+import '../config/config_provider.dart';
 import '../models/chat_models.dart';
 
 final chatClientProvider = Provider<ChatClient>((ref) {
-  return ChatClient(chatEndpoint: AppConfig.chatApiEndpoint);
+  final config = ref.watch(envConfigProvider);
+  return ChatClient(chatEndpoint: config.chatApiEndpoint);
 });
 
 class ChatClient {
