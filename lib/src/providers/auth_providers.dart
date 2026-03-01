@@ -12,17 +12,14 @@ final userProvider = StreamProvider.autoDispose<User?>((ref) async* {
   }
 });
 
-final loginProvider = NotifierProvider<LoginNotifier, LoginState>(
-  () => LoginNotifier(),
-);
+final loginProvider = NotifierProvider<LoginNotifier, LoginState>(() => LoginNotifier());
 
 class LoginNotifier extends Notifier<LoginState> {
   @override
   LoginState build() => LoginState();
 
   void setEmail(String email) => state = state.copyWith(email: email);
-  void setPassword(String password) =>
-      state = state.copyWith(password: password);
+  void setPassword(String password) => state = state.copyWith(password: password);
 
   void reset() => state = LoginState();
 
@@ -34,11 +31,38 @@ class LoginNotifier extends Notifier<LoginState> {
         password: state.password.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      state = state.copyWith(error: e.message);
+      state = state.copyWith(error: _getErrorMessage(e));
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      state = state.copyWith(error: 'An unexpected error occurred. Please try again.');
     } finally {
       state = state.copyWith(loading: false);
+    }
+  }
+
+  String _getErrorMessage(FirebaseAuthException exception) {
+    switch (exception.code) {
+      case 'invalid-email':
+        return 'The email address is invalid. Please check and try again.';
+      case 'user-disabled':
+        return 'This account has been disabled. Please contact support.';
+      case 'user-not-found':
+        return 'No account found with this email address.';
+      case 'wrong-password':
+        return 'Incorrect password. Please try again.';
+      case 'invalid-credential':
+        return 'Invalid email or password. Please check and try again.';
+      case 'operation-not-allowed':
+        return 'Email/password sign-in is not available. Please contact support.';
+      case 'too-many-requests':
+        return 'Too many failed login attempts. Please try again later.';
+      case 'network-request-failed':
+        return 'Network connection failed. Please check your internet connection.';
+      case 'invalid-api-key':
+        return 'Service configuration error. Please contact support.';
+      case 'app-not-authorized':
+        return 'App is not authorized. Please contact support.';
+      default:
+        return 'Login failed. Please try again.';
     }
   }
 }
@@ -49,19 +73,9 @@ class LoginState {
   final String? error;
   final bool loading;
 
-  LoginState({
-    this.email = '',
-    this.password = '',
-    this.error,
-    this.loading = false,
-  });
+  LoginState({this.email = '', this.password = '', this.error, this.loading = false});
 
-  LoginState copyWith({
-    String? email,
-    String? password,
-    String? error,
-    bool? loading,
-  }) {
+  LoginState copyWith({String? email, String? password, String? error, bool? loading}) {
     return LoginState(
       email: email ?? this.email,
       password: password ?? this.password,
