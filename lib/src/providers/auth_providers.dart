@@ -12,14 +12,17 @@ final userProvider = StreamProvider.autoDispose<User?>((ref) async* {
   }
 });
 
-final loginProvider = NotifierProvider<LoginNotifier, LoginState>(() => LoginNotifier());
+final loginProvider = NotifierProvider<LoginNotifier, LoginState>(
+  () => LoginNotifier(),
+);
 
 class LoginNotifier extends Notifier<LoginState> {
   @override
   LoginState build() => LoginState();
 
   void setEmail(String email) => state = state.copyWith(email: email);
-  void setPassword(String password) => state = state.copyWith(password: password);
+  void setPassword(String password) =>
+      state = state.copyWith(password: password);
 
   void reset() => state = LoginState();
 
@@ -30,9 +33,9 @@ class LoginNotifier extends Notifier<LoginState> {
         email: state.email.trim(),
         password: state.password.trim(),
       );
-    } on FirebaseAuthException catch(e) {
+    } on FirebaseAuthException catch (e) {
       state = state.copyWith(error: e.message);
-    } catch(e) {
+    } catch (e) {
       state = state.copyWith(error: e.toString());
     } finally {
       state = state.copyWith(loading: false);

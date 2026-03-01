@@ -68,7 +68,9 @@ class HomePage extends ConsumerWidget {
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('Confirm Logout'),
-                          content: const Text('Are you sure you want to log out?'),
+                          content: const Text(
+                            'Are you sure you want to log out?',
+                          ),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(context).pop(false),

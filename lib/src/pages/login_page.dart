@@ -30,7 +30,10 @@ class LoginPage extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
             if (loginState.error != null) ...[
-              Text(loginState.error!, style: const TextStyle(color: Colors.red)),
+              Text(
+                loginState.error!,
+                style: const TextStyle(color: Colors.red),
+              ),
               const SizedBox(height: 16),
             ],
             loginState.loading
