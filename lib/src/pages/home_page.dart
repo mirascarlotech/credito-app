@@ -1,3 +1,4 @@
+import 'package:credito_app/src/pages/chat_page.dart';
 import 'package:credito_app/src/providers/auth_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,10 +19,10 @@ final counterProvider = NotifierProvider<CounterNotifier, int>(() {
   return CounterNotifier();
 });
 
-class HomeScreen extends ConsumerWidget {
+class HomePage extends ConsumerWidget {
   final String title;
 
-  const HomeScreen({super.key, required this.title});
+  const HomePage({super.key, required this.title});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,6 +49,17 @@ class HomeScreen extends ConsumerWidget {
                       ref.read(counterProvider.notifier).increment();
                     },
                     child: Text('Increment Counter'),
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ChatPage(),
+                        ),
+                      );
+                    },
+                    child: const Text('Chat'),
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
