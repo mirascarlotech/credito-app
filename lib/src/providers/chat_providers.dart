@@ -19,14 +19,17 @@ class CreditoChatProvider extends LlmProvider with ChangeNotifier {
 
   @override
   Stream<String> generateStream(String prompt, {Iterable<Attachment> attachments = const []}) async* {
-    final response = _chatClient.sendMessageStream(prompt, previousResponseId: _previousResponseId);
+    final stream = _chatClient.sendMessageStream(prompt, previousResponseId: _previousResponseId);
 
-    yield* response.map((event) {
-      // If event is a response.created, we update the previousResponseId so that the next message will be threaded correctly.
-      _previousResponseId = event.asResponseCreated()?.response.id ?? _previousResponseId;
-      // If event is a output.text.delta, we append the delta to the current message in the history so that the UI can reflect the streaming response.
-      return event.asResponseOutputTextDelta()?.delta ?? '';
-    });
+    yield* stream
+        .map((event) {
+          // If event is a response.created, we update the previousResponseId so that the next message will be threaded correctly.
+          _previousResponseId = event.asResponseCreated()?.response.id ?? _previousResponseId;
+          // If event is a output.text.delta, we append the delta to the current message in the history so that the UI can reflect the streaming response.
+          return event.asResponseOutputTextDelta()?.delta;
+        })
+        .where((text) => text != null)
+        .cast<String>();
   }
 
   @override
@@ -35,9 +38,9 @@ class CreditoChatProvider extends LlmProvider with ChangeNotifier {
     final llmMessage = ChatMessage.llm();
     _history.addAll([userMessage, llmMessage]);
 
-    final response = generateStream(prompt, attachments: attachments);
+    final stream = generateStream(prompt, attachments: attachments);
 
-    yield* response.map((text) {
+    yield* stream.map((text) {
       llmMessage.append(text);
       return text;
     });
