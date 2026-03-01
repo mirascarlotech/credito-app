@@ -1,6 +1,6 @@
 import 'package:credito_app/src/config/config_provider.dart';
 import 'package:credito_app/src/config/env_config.dart';
-import 'package:credito_app/src/pages/home_page.dart';
+import 'package:credito_app/src/navigation/main_navigation.dart';
 import 'package:credito_app/src/pages/login_page.dart';
 import 'package:credito_app/src/providers/auth_providers.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +50,7 @@ class AuthGate extends ConsumerWidget {
       error: (err, stack) => Scaffold(body: Center(child: Text('Error: $err'))),
       data: (user) {
         if (user != null) {
-          return const HomePage(title: 'Credito');
+          return const MainNavigation();
         } else {
           return const LoginPage();
         }
