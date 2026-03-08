@@ -12,7 +12,18 @@ class ChatPage extends ConsumerWidget {
     final creditoChatProvider = ref.watch(creditoChatProviderProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Chat')),
+      appBar: AppBar(
+        title: const Text('Chat'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            tooltip: 'Start new chat',
+            onPressed: () {
+              creditoChatProvider.startNewChat();
+            },
+          ),
+        ],
+      ),
       body: LlmChatView(
         welcomeMessage: 'Hello! How can I assist you today?',
         enableAttachments: false,

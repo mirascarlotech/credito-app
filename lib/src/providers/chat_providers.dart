@@ -57,4 +57,11 @@ class CreditoChatProvider extends LlmProvider with ChangeNotifier {
     _history.addAll(history);
     notifyListeners();
   }
+
+  /// Clears the chat history and resets the response ID for a new conversation
+  void startNewChat() {
+    _history.clear();
+    _previousResponseId = null;
+    notifyListeners();
+  }
 }
