@@ -64,7 +64,7 @@ class ProfilePage extends ConsumerWidget {
                   );
                   if (shouldLogout == true) {
                     await FirebaseAuth.instance.signOut();
-                    ref.read(loginProvider.notifier).reset();
+                    ref.read(authProvider.notifier).reset();
                   }
                 },
                 icon: const Icon(Icons.logout),

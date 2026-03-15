@@ -10,8 +10,8 @@ class LoginPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loginState = ref.watch(loginProvider);
-    final loginNotifier = ref.read(loginProvider.notifier);
+    final loginState = ref.watch(authProvider);
+    final authNotifier = ref.read(authProvider.notifier);
     final obscurePassword = ref.watch(_obscurePasswordProvider);
 
     return Scaffold(
@@ -27,7 +27,7 @@ class LoginPage extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TextField(
-                    onChanged: loginNotifier.setEmail,
+                    onChanged: authNotifier.setEmail,
                     decoration: const InputDecoration(labelText: 'Email'),
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
@@ -35,7 +35,7 @@ class LoginPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   TextField(
-                    onChanged: loginNotifier.setPassword,
+                    onChanged: authNotifier.setPassword,
                     decoration: InputDecoration(
                       labelText: 'Password',
                       suffixIcon: IconButton(
@@ -45,7 +45,7 @@ class LoginPage extends ConsumerWidget {
                     ),
                     obscureText: obscurePassword,
                     textInputAction: TextInputAction.done,
-                    onSubmitted: (_) => loginNotifier.login(),
+                    onSubmitted: (_) => authNotifier.login(),
                   ),
                   const SizedBox(height: 24),
                   if (loginState.error != null) ...[
@@ -58,11 +58,11 @@ class LoginPage extends ConsumerWidget {
                   ],
                   loginState.loading
                       ? const Center(child: CircularProgressIndicator())
-                      : ElevatedButton(onPressed: loginNotifier.login, child: const Text('Login')),
+                      : ElevatedButton(onPressed: authNotifier.login, child: const Text('Login')),
                   const SizedBox(height: 12),
                   TextButton(
                     onPressed: () {
-                      loginNotifier.reset();
+                      authNotifier.reset();
                       Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RegisterPage()));
                     },
                     child: const Text('Create account'),

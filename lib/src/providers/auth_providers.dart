@@ -12,16 +12,17 @@ final userProvider = StreamProvider.autoDispose<User?>((ref) async* {
   }
 });
 
-final loginProvider = NotifierProvider<LoginNotifier, LoginState>(() => LoginNotifier());
+final authProvider = NotifierProvider<AuthNotifier, AuthState>(() => AuthNotifier());
 
-class LoginNotifier extends Notifier<LoginState> {
+class AuthNotifier extends Notifier<AuthState> {
   @override
-  LoginState build() => LoginState();
+  AuthState build() => AuthState();
 
   void setEmail(String email) => state = state.copyWith(email: email);
+
   void setPassword(String password) => state = state.copyWith(password: password);
 
-  void reset() => state = LoginState();
+  void reset() => state = AuthState();
 
   Future<void> login() async {
     final validationError = _validateCredentials();
@@ -139,7 +140,7 @@ class LoginNotifier extends Notifier<LoginState> {
   }
 }
 
-class LoginState {
+class AuthState {
   static const _unset = Object();
 
   final String email;
@@ -147,10 +148,10 @@ class LoginState {
   final String? error;
   final bool loading;
 
-  LoginState({this.email = '', this.password = '', this.error, this.loading = false});
+  AuthState({this.email = '', this.password = '', this.error, this.loading = false});
 
-  LoginState copyWith({String? email, String? password, Object? error = _unset, bool? loading}) {
-    return LoginState(
+  AuthState copyWith({String? email, String? password, Object? error = _unset, bool? loading}) {
+    return AuthState(
       email: email ?? this.email,
       password: password ?? this.password,
       error: identical(error, _unset) ? this.error : error as String?,

@@ -9,12 +9,12 @@ class RegisterPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loginState = ref.watch(loginProvider);
-    final loginNotifier = ref.read(loginProvider.notifier);
+    final authState = ref.watch(authProvider);
+    final authNotifier = ref.read(authProvider.notifier);
     final obscurePassword = ref.watch(_obscurePasswordProvider);
 
     Future<void> submit() async {
-      final registered = await loginNotifier.register();
+      final registered = await authNotifier.register();
       if (!context.mounted || !registered) {
         return;
       }
@@ -48,7 +48,7 @@ class RegisterPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 24),
                   TextField(
-                    onChanged: loginNotifier.setEmail,
+                    onChanged: authNotifier.setEmail,
                     decoration: const InputDecoration(labelText: 'Email'),
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
@@ -56,7 +56,7 @@ class RegisterPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 16),
                   TextField(
-                    onChanged: loginNotifier.setPassword,
+                    onChanged: authNotifier.setPassword,
                     decoration: InputDecoration(
                       labelText: 'Password',
                       suffixIcon: IconButton(
@@ -69,15 +69,15 @@ class RegisterPage extends ConsumerWidget {
                     onSubmitted: (_) => submit(),
                   ),
                   const SizedBox(height: 24),
-                  if (loginState.error != null) ...[
+                  if (authState.error != null) ...[
                     Text(
-                      loginState.error!,
+                      authState.error!,
                       style: const TextStyle(color: Colors.red),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
                   ],
-                  loginState.loading
+                  authState.loading
                       ? const Center(child: CircularProgressIndicator())
                       : ElevatedButton(onPressed: submit, child: const Text('Register')),
                 ],
