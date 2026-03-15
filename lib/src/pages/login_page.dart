@@ -3,6 +3,8 @@ import 'package:credito_app/src/providers/auth_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final _obscurePasswordProvider = StateProvider.autoDispose<bool>((ref) => true);
+
 class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
@@ -10,6 +12,7 @@ class LoginPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final loginState = ref.watch(loginProvider);
     final loginNotifier = ref.read(loginProvider.notifier);
+    final obscurePassword = ref.watch(_obscurePasswordProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login')),
@@ -33,8 +36,14 @@ class LoginPage extends ConsumerWidget {
                   const SizedBox(height: 16),
                   TextField(
                     onChanged: loginNotifier.setPassword,
-                    decoration: const InputDecoration(labelText: 'Password'),
-                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(obscurePassword ? Icons.visibility_off : Icons.visibility),
+                        onPressed: () => ref.read(_obscurePasswordProvider.notifier).state = !obscurePassword,
+                      ),
+                    ),
+                    obscureText: obscurePassword,
                     textInputAction: TextInputAction.done,
                     onSubmitted: (_) => loginNotifier.login(),
                   ),
