@@ -5,34 +5,33 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:credito_app/src/pages/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:credito_app/main.dart';
-import 'package:credito_app/src/config/dev_config.dart';
-import 'package:credito_app/src/config/config_provider.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [envConfigProvider.overrideWithValue(devConfig)],
-        child: const MyApp(config: devConfig),
-      ),
-    );
+  Widget buildTestApp(Widget child) {
+    return ProviderScope(child: MaterialApp(home: child));
+  }
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('login page shows fields and create account action', (WidgetTester tester) async {
+    await tester.pumpWidget(buildTestApp(const LoginPage()));
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    expect(find.text('Login'), findsNWidgets(2));
+    expect(find.text('Email'), findsOneWidget);
+    expect(find.text('Password'), findsOneWidget);
+    expect(find.widgetWithText(TextButton, 'Create account'), findsOneWidget);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('tapping create account opens the registration page', (WidgetTester tester) async {
+    await tester.pumpWidget(buildTestApp(const LoginPage()));
+
+    await tester.tap(find.widgetWithText(TextButton, 'Create account'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Create account'), findsOneWidget);
+    expect(find.text('Sign up with your email'), findsOneWidget);
+    expect(find.widgetWithText(ElevatedButton, 'Register'), findsOneWidget);
   });
 }

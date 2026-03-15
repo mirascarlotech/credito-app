@@ -1,18 +1,27 @@
-import 'package:credito_app/src/pages/register_page.dart';
 import 'package:credito_app/src/providers/auth_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LoginPage extends ConsumerWidget {
-  const LoginPage({super.key});
+class RegisterPage extends ConsumerWidget {
+  const RegisterPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final loginState = ref.watch(loginProvider);
     final loginNotifier = ref.read(loginProvider.notifier);
 
+    Future<void> submit() async {
+      final registered = await loginNotifier.register();
+      if (!context.mounted || !registered) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Account created successfully.')));
+      Navigator.of(context).pop();
+    }
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Login')),
+      appBar: AppBar(title: const Text('Create account')),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -23,6 +32,18 @@ class LoginPage extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Text(
+                    'Sign up with your email',
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Use a valid email address and a password with at least 6 characters.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 24),
                   TextField(
                     onChanged: loginNotifier.setEmail,
                     decoration: const InputDecoration(labelText: 'Email'),
@@ -36,7 +57,7 @@ class LoginPage extends ConsumerWidget {
                     decoration: const InputDecoration(labelText: 'Password'),
                     obscureText: true,
                     textInputAction: TextInputAction.done,
-                    onSubmitted: (_) => loginNotifier.login(),
+                    onSubmitted: (_) => submit(),
                   ),
                   const SizedBox(height: 24),
                   if (loginState.error != null) ...[
@@ -49,15 +70,7 @@ class LoginPage extends ConsumerWidget {
                   ],
                   loginState.loading
                       ? const Center(child: CircularProgressIndicator())
-                      : ElevatedButton(onPressed: loginNotifier.login, child: const Text('Login')),
-                  const SizedBox(height: 12),
-                  TextButton(
-                    onPressed: () {
-                      loginNotifier.reset();
-                      Navigator.of(context).push(MaterialPageRoute(builder: (_) => const RegisterPage()));
-                    },
-                    child: const Text('Create account'),
-                  ),
+                      : ElevatedButton(onPressed: submit, child: const Text('Register')),
                 ],
               ),
             ),
